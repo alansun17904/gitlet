@@ -11,7 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Blob implements Serializable {
-	public String filename;
+	private String filename;
 	private String hash;
 	private String content;
 	
@@ -36,6 +36,14 @@ public class Blob implements Serializable {
 	
 	public static void main(String[] args) {
 
+	}
+	
+	public String getFilename() {
+		return this.filename;
+	}
+	
+	public String getHash() {
+		return this.hash;
 	}
 	
 	public static String hash(String hashText) {
