@@ -32,18 +32,18 @@ public class TestBlob {
 	
 	@Test 
 	public void testSHA3() {
-		assertEquals("0190E761BBA7BF93FAC099718DDB33FD9B3BEA1F",
+		assertEquals("0190e761bba7bf93fac099718ddb33fd9b3bea1f",
 						main.Blob.hash("hello world."));
 	}
 	
 	@Test 
-	public void testCompareToEqual() {
+	public void testBlobEqual() {
 		assertTrue(this.blob1.equals(blob2));
 		assertTrue(this.blob2.equals(blob1));
 	}
 	
 	@Test
-	public void testCompareToNotEqual() {
+	public void testBlobNotEqual() {
 		assertTrue(!this.blob1.equals(blob3));
 		assertTrue(!this.blob2.equals(blob3));
 	}

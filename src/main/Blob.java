@@ -27,20 +27,37 @@ public class Blob implements Serializable {
 					this.content = this.content + "\n";
 				}
 			}
-			System.out.println(this.content);
 			reader.close();
+			this.hash = Blob.hash(this.content);
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found.");
 		}
 	}
 	
 	public static void main(String[] args) {
-		
+
 	}
 	
 	public static String hash(String hashText) {
-		return "";
+		/*
+		 * https://www.geeksforgeeks.org/sha-1-hash-in-java/
+		 */
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			byte[] messageDigest = md.digest(hashText.getBytes());
+			BigInteger no = new BigInteger(1, messageDigest);
+			String hashedtext = no.toString(16); 
+			while (hashedtext.length() < 40) { 
+                hashedtext = "0" + hashedtext; 
+            }
+			System.out.println(hashedtext);
+			return hashedtext; 
+			
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
 	}
+
 	
 	public boolean equals(Blob other) {
 		return this.hash.equals(other.hash);
