@@ -11,10 +11,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import static org.junit.Assert.*;
 
-public class TestRepository {
+
+public class TestRepositoryCreation {
 	public main.Repository r;
 	public PrintStream orgStream = System.out;
 	public PrintStream fileStream;
@@ -45,14 +45,14 @@ public class TestRepository {
 	
 	@Test
 	public void testNewGitInitNewCommit() {
-		assertEquals(1, this.r.getCommits.lenghth);
-		assertEquals("initial commit", r.getCommits[0].getMessage());
-		assertEquals("master", r.getCommits[0].getBranchName());
+		assertEquals(1, this.r.getCommits().length);
+		assertEquals("initial commit", r.getCommits()[0].getMessage());
+		assertEquals("master", r.getCommits()[0].getBranch());
 		
 		Calendar c = Calendar.getInstance(); 
 		c.set(1970, 1, 1, 0, 0, 0);
 		Date epoch = c.getTime();
-		assertTrue(epoch.equals(r.getCommits[0].getDate()));
+		assertTrue(epoch.equals(r.getCommits()[0].getDate()));
 	}
 	
 	@Test
@@ -68,12 +68,12 @@ public class TestRepository {
 		}
 		assertEquals(1, count);
 	}
-	
-	@Test
+
 	/*
 	 * Check if repo has printed "A Gitlet version-control system 
 	 * already exists in the current directory."
 	 */
+	@Test
 	public void testDoubleGitInitDir() {
         // Create duplicate repository
 		main.Repository rDup = new main.Repository();
@@ -93,25 +93,14 @@ public class TestRepository {
 		
 	}
 	
-	public static boolean deleteDirectory(File dir) {
-		/*
-		 * https://javarevisited.blogspot.com/2015/03/how-to-delete-directory-in-java-with-files.html
-		 */
-		if (dir.isDirectory()) {
-			File[] children = dir.listFiles();
-			for (int i=0; i<children.length; i++) {
-				boolean success = deleteDirectory(children[i]);
-				if (!success) {
-					return true;
-				}
-			}
-		}
-		return dir.delete();
+	@Test
+	public void testFindInit() {
+		assertEquals(1, this.r.find("initial commit").length);
 	}
 	
 	@After 
 	public void after() {
-		TestRepository.deleteDirectory(new File("out.txt"));
-		TestRepository.deleteDirectory(new File(".gitlet"));
+		tests.Utility.deleteDirectory(new File("out.txt"));
+		tests.Utility.deleteDirectory(new File(".gitlet"));
 	}
 }
