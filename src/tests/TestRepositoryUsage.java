@@ -30,7 +30,7 @@ class TestRepositoryUsage {
 	
 	@After
 	public void after() {
-		tests.Utility.deleteDirectory(new File(".gitlet"));
+		tests.TestUtility.deleteDirectory(new File(".gitlet"));
 	}
 
 }

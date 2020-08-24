@@ -10,12 +10,11 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-class TestCommit {
+public class TestCommit {
 	private Blob blob1;
 	private Blob blob2;
 	private Blob blob3;
 	
-	private Blob[] blobs;
 	private Commit c1;
 	private Commit c2;
 	
@@ -25,22 +24,24 @@ class TestCommit {
 		this.blob2 = new Blob("/src/tests/resources/introduction2.txt");
 		this.blob3 = new Blob("/src/tests/resoucres/random.txt");
 		
-		Blob[] staging = {blob1, blob2, blob3};
+		Blob[] staging1 = {blob1};
+		Blob[] staging2 = {blob2, blob3};
 		
-		this.c1 = new Commit(staging, "this is a test commit");
-		this.c2 = new Commit(staging, "this is another commit");
-	}
-	
-	@Test
-	public void testCommitMessagaContent() {
-		assertEquals("this is a test commit", this.c1.getMessage());
-		assertEquals("this is another commit", this.c2.getMessage());
+		this.c1 = new Commit(staging1);
+		this.c2 = new Commit(staging2, "this is another commit", "master",
+							 this.c1);
 	}
 	
 	@Test
 	public void testCommitMessageContent() {
-		Date date;
+		assertEquals("initial commit", this.c1.getMessage());
+		assertEquals("this is another commit", this.c2.getMessage());
+	}
+	
+	@Test
+	public void testCommitDateTime() {
 		Calendar cal = Calendar.getInstance();
+		cal.set(1970, 0, 1, 0, 0, 0);
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH);
 		int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -50,19 +51,44 @@ class TestCommit {
 	}
 	
 	@Test
-	public void testStagingGroundContent() {
-		assertArrayEquals(this.blobs, this.c1.getStagingGround);
+	public void testPreviousCommits() {
+		assertEquals(this.c1, this.c2.getPreviousCommit());
+		assertEquals(null, this.c1.getPreviousCommit());
 	}
 	
 	@Test
-	public void testCommitHashing() {
-		assertNotEquals(this.c1.getHash(), this.c2.getHash());
+	public void testCommitMessageAuthor() {
+		String username = System.getProperty("user.name");
+		assertEquals(username, c1.getAuthor());
+		assertEquals(username, c2.getAuthor());
 	}
+	
+	@Test
+	public void testStagingGroundContent() {
+		Blob[] staging1 = {blob1};
+		assertArrayEquals(staging1, this.c1.getStagingGround());
+	}
+	
 	
 	@Test
 	public void testAddingToStagingGround() {
 		main.Commit addedCommit = c1.add("/src/tests/resources/another_one.txt");
 		assertNotEquals(addedCommit.getHash(), this.c1.getHash());
+		assertEquals(null, this.c1.getPreviousCommit());
+	}
+	
+	@Test
+	public void testRemovingFromStagingGround() {
+		fail("Not implemented!");
+	}
+
+	@Test
+	public void testCommitEquals() {
+		Commit c3 = new Commit(new Blob[] {this.blob1},
+								"this commit contains a blob",
+								"not-master", this.c2);
+		assertFalse(this.c1.equals(this.c2));
+		assertTrue(this.c1.equals(c3));
 	}
 	
 }

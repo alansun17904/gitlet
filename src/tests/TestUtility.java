@@ -2,7 +2,7 @@ package tests;
 
 import java.io.File;
 
-public class Utility {
+public class TestUtility {
 	public static boolean deleteDirectory(File dir) {
 		/*
 		 * https://javarevisited.blogspot.com/2015/03/how-to-delete-directory-in-java-with-files.html

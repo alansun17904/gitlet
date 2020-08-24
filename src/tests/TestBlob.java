@@ -20,20 +20,20 @@ public class TestBlob {
 	
 	@Test
 	public void testSHA1() {
-		assertNotEquals(main.Blob.hash("hello world"), 
-				   		main.Blob.hash("my name is alan"));
+		assertNotEquals(main.Utility.hash("hello world"), 
+				   		main.Utility.hash("my name is alan"));
 	}
 	
 	@Test
 	public void testSHA2() {
-		assertNotEquals(main.Blob.hash("   sdf.txt"), 
-						main.Blob.hash("sdf.txt"));
+		assertNotEquals(main.Utility.hash("   sdf.txt"), 
+						main.Utility.hash("sdf.txt"));
 	}
 	
 	@Test 
 	public void testSHA3() {
 		assertEquals("0190e761bba7bf93fac099718ddb33fd9b3bea1f",
-						main.Blob.hash("hello world."));
+						main.Utility.hash("hello world."));
 	}
 	
 	@Test 

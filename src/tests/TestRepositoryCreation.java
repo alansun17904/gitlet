@@ -50,7 +50,7 @@ public class TestRepositoryCreation {
 		assertEquals("master", r.getCommits()[0].getBranch());
 		
 		Calendar c = Calendar.getInstance(); 
-		c.set(1970, 1, 1, 0, 0, 0);
+		c.set(1970, 0, 1, 0, 0, 0);
 		Date epoch = c.getTime();
 		assertTrue(epoch.equals(r.getCommits()[0].getDate()));
 	}
@@ -100,7 +100,7 @@ public class TestRepositoryCreation {
 	
 	@After 
 	public void after() {
-		tests.Utility.deleteDirectory(new File("out.txt"));
-		tests.Utility.deleteDirectory(new File(".gitlet"));
+		tests.TestUtility.deleteDirectory(new File("out.txt"));
+		tests.TestUtility.deleteDirectory(new File(".gitlet"));
 	}
 }
