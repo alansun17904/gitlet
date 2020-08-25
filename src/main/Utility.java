@@ -20,7 +20,6 @@ public class Utility {
 			while (hashedtext.length() < 40) { 
                 hashedtext = "0" + hashedtext; 
             }
-			System.out.println(hashedtext);
 			return hashedtext; 
 			
 		} catch (NoSuchAlgorithmException e) {

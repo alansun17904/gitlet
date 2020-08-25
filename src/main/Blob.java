@@ -4,11 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.io.*;
 import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class Blob implements Serializable {
 	private String filename;

@@ -22,10 +22,14 @@ public class TestCommit {
 	public void before() {
 		this.blob1 = new Blob("/src/tests/resources/introduction1.txt");
 		this.blob2 = new Blob("/src/tests/resources/introduction2.txt");
-		this.blob3 = new Blob("/src/tests/resoucres/random.txt");
+		this.blob3 = new Blob("/src/tests/resources/random.txt");
 		
 		Blob[] staging1 = {blob1};
 		Blob[] staging2 = {blob2, blob3};
+		
+		System.out.println(blob1.getHash());
+		System.out.println(blob2.getHash());
+		System.out.println(blob3.getHash());
 		
 		this.c1 = new Commit(staging1);
 		this.c2 = new Commit(staging2, "this is another commit", "master",

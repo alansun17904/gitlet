@@ -2,6 +2,7 @@ package main;
 
 import java.util.Date;
 import java.util.Calendar;
+import java.util.Arrays;
 
 
 public class Commit {
@@ -62,10 +63,18 @@ public class Commit {
 		if (this.blobs.length == 0) {
 			return Utility.hash(" ");
 		} else {
-			// first sort all file hashes
-			
+			// first sort all file hashes alphabetically
+			String[] blobHashes = new String[this.blobs.length];
+			for (int i = 0; i < this.blobs.length; i++) { 
+				blobHashes[i] = this.blobs[i].getHash();
+			}
+			Arrays.sort(blobHashes);
+			String combinedFileHashes = "";
+			for (String blobHash: blobHashes) {
+				combinedFileHashes = combinedFileHashes + blobHash;
+			}
+			return Utility.hash(combinedFileHashes);
 		}
-		return "";
 	}
 	
 	public boolean equals(Commit other) {
