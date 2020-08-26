@@ -2,12 +2,15 @@ package main;
 
 import java.util.Date;
 import java.util.Calendar;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.io.File;
 
 
 public class Commit {
-	private Blob[] blobs;
+	private List<Blob> blobs;
 	private String author;
 	private String hash;
 	private String branchName;
@@ -18,7 +21,7 @@ public class Commit {
 	/*
 	 * Creates the first commit that has a date of 01/01/1970.
 	 */
-	public Commit(Blob[] blobs) {
+	public Commit(List<Blob> blobs) {
 		this.blobs = blobs;
 		this.author = System.getProperty("user.name");
 		this.message = "initial commit";
@@ -29,7 +32,7 @@ public class Commit {
 		this.hash = this.generateCommitHash();
 	}
 	
-	public Commit(Blob[] blobs, String message, String branchName, 
+	public Commit(List<Blob> blobs, String message, String branchName, 
 			Commit previous) {
 		this.blobs = blobs;
 		this.author = System.getProperty("user.name");
@@ -50,7 +53,7 @@ public class Commit {
 	
 	public Commit getPreviousCommit() {return this.previousCommit;}
 	
-	public Blob[] getStagingGround() {return this.blobs;}
+	public List<Blob> getStagingGround() {return this.blobs;}
 	
 	public String getHash() {return this.hash;}
 
@@ -61,13 +64,13 @@ public class Commit {
 	 * have the same hash.
 	 */
 	private String generateCommitHash() {
-		if (this.blobs.length == 0) {
+		if (this.blobs.size() == 0) {
 			return Utility.hash(" ");
 		} else {
 			// first sort all file hashes alphabetically
-			String[] blobHashes = new String[this.blobs.length];
-			for (int i = 0; i < this.blobs.length; i++) { 
-				blobHashes[i] = this.blobs[i].getHash();
+			String[] blobHashes = new String[this.blobs.size()];
+			for (int i = 0; i < this.blobs.size(); i++) { 
+				blobHashes[i] = this.blobs.get(i).getHash();
 			}
 			Arrays.sort(blobHashes);
 			String combinedFileHashes = "";
@@ -83,15 +86,25 @@ public class Commit {
 	}
 	
 	public Commit add(String filename) {
+		// TODO: add case where the filename is already a part of the staging ground.
+		// Loop through the list if the filename equates to one in the 
+		// blob list then replace it with a new filename 
+		// otherwise add it at the very end of the list.
+		List<Blob> newFiles = new ArrayList<Blob>(this.blobs.size());
 		Blob additionalFile = new Blob(filename);
-		Blob[] newFiles = new Blob[this.blobs.length + 1];
-		for (int i=0; i<newFiles.length-1; i++) {
-			newFiles[i] = this.blobs[i];
+		for (int i = 0; i < newFiles.size(); i++) {
+			String currentFilename = newFiles.get(i).getFilename();
+			if (additionalFile.getFilename().equals(currentFilename)) {
+				newFiles.set(i, additionalFile);
+				return new Commit(newFiles, this.getMessage(), this.getBranch(),
+						this.getPreviousCommit());
+			} else {
+				newFiles.set(i, this.blobs.get(i));
+			}
 		}
-		
-		newFiles[newFiles.length-1] = additionalFile;
+		newFiles.add(additionalFile);
 		return new Commit(newFiles, this.getMessage(), this.getBranch(),
-				this.getPreviousCommit());
+						this.getPreviousCommit());
 	}
 	
 	/*
@@ -110,14 +123,14 @@ public class Commit {
 		}
 		if (fileExists) {
 			Utility.deleteDirectory(new File(System.getProperty("user.dir") + filename));
-			if (this.blobs.length - 1 == 0) {
-				return new Commit(new Blob[] {}, this.getMessage(), 
+			if (this.blobs.size() - 1 == 0) {
+				return new Commit(new ArrayList<Blob>() {}, this.getMessage(), 
 						this.getBranch(), this.getPreviousCommit());
 			}
-			Blob[] newFiles = new Blob[this.blobs.length - 1];
-			for (int i = 0; i < this.blobs.length; i++) {
-				if (this.blobs[i].getFilename() != filename) {
-					newFiles[i] = this.blobs[i];
+			List<Blob> newFiles = new ArrayList<Blob>(this.blobs.size() - 1);
+			for (int i = 0; i < this.blobs.size(); i++) {
+				if (this.blobs.get(i).getFilename() != filename) {
+					newFiles.set(i, this.blobs.get(i));
 				}
 			}
 			return new Commit(newFiles, this.getMessage(), 

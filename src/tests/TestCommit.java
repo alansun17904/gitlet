@@ -11,6 +11,9 @@ import java.nio.file.*;
 import java.io.*;
 
 import static org.junit.Assert.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TestCommit {
 	private Blob blob1;
@@ -26,8 +29,8 @@ public class TestCommit {
 		this.blob2 = new Blob("/src/tests/resources/introduction2.txt");
 		this.blob3 = new Blob("/src/tests/resources/random.txt");
 		
-		Blob[] staging1 = {blob1};
-		Blob[] staging2 = {blob2, blob3};
+		List<Blob> staging1 = new ArrayList<Blob>(Arrays.asList(this.blob1));
+		List<Blob> staging2 = new ArrayList<Blob>(Arrays.asList(blob2, blob3));
 		
 		this.c1 = new Commit(staging1);
 		this.c2 = new Commit(staging2, "this is another commit", "master",
@@ -75,21 +78,29 @@ public class TestCommit {
 	
 	@Test
 	public void testStagingGroundContent() {
-		Blob[] staging1 = {blob1};
-		assertArrayEquals(staging1, this.c1.getStagingGround());
+		List<Blob> staging1 = new ArrayList<Blob>(Arrays.asList(this.blob1));
+		assertTrue(this.c1.getStagingGround().equals(staging1));
 	}
 	
 	
 	@Test
-	public void testAddingToStagingGround() {
+	public void testAddingToStagingGround1() {
 		main.Commit addedCommit = c1.add("/src/tests/resources/another_one.txt");
 		assertNotEquals(addedCommit.getHash(), this.c1.getHash());
-		assertEquals(null, this.c1.getPreviousCommit());
+		assertEquals(null, addedCommit.getPreviousCommit());
+	}
+	
+	@Test
+	public void testAddingToStagingGround2() {
+		main.Commit addedCommit = this.c1.add("/src/tests/resources/introduction1.txt");
+		assertEquals(1, addedCommit.getStagingGround().size());
+		assertNotEquals(this.c1, addedCommit);
+		assertEquals(null, addedCommit.getPreviousCommit());
 	}
 	
 	@Test
 	public void testCommitEquals() {
-		Commit c3 = new Commit(new Blob[] {this.blob1},
+		Commit c3 = new Commit(new ArrayList<Blob>(Arrays.asList(this.blob1)),
 								"this commit contains a blob",
 								"not-master", this.c2);
 		assertFalse(this.c1.equals(this.c2));
@@ -99,11 +110,11 @@ public class TestCommit {
 	@Test
 	public void testRemovingFromStagingGround() {
 		Blob newBlob = new Blob("/to_be_removed.txt");
-		main.Commit newCommit = new Commit(new Blob[] {newBlob});
+		main.Commit newCommit = new Commit(new ArrayList<Blob>(Arrays.asList(newBlob))); 
 		Commit removedCommit = newCommit.remove("/to_be_removed.txt");
 		File removed = new File(System.getProperty("user.dir") + "/to_be_removed.txt");
 		assertTrue(!removed.exists());
-		assertEquals(0, removedCommit.getStagingGround().length);
+		assertEquals(0, removedCommit.getStagingGround().size());
 		if (removed.exists()) {
 			tests.TestUtility.deleteDirectory(removed);
 		}
