@@ -7,6 +7,8 @@ import main.Blob;
 import main.Commit;
 import java.util.Calendar;
 import java.util.Date;
+import java.nio.file.*;
+import java.io.*;
 
 import static org.junit.Assert.*;
 
@@ -27,13 +29,17 @@ public class TestCommit {
 		Blob[] staging1 = {blob1};
 		Blob[] staging2 = {blob2, blob3};
 		
-		System.out.println(blob1.getHash());
-		System.out.println(blob2.getHash());
-		System.out.println(blob3.getHash());
-		
 		this.c1 = new Commit(staging1);
 		this.c2 = new Commit(staging2, "this is another commit", "master",
 							 this.c1);
+		
+		// create new file to be later removed.
+		File newFile = new File(System.getProperty("user.dir") + "/to_be_removed.txt");
+		try {
+			newFile.createNewFile();
+		} catch (IOException e) {
+			System.out.println("File already exists");
+		}
 	}
 	
 	@Test
@@ -82,17 +88,33 @@ public class TestCommit {
 	}
 	
 	@Test
-	public void testRemovingFromStagingGround() {
-		fail("Not implemented!");
-	}
-
-	@Test
 	public void testCommitEquals() {
 		Commit c3 = new Commit(new Blob[] {this.blob1},
 								"this commit contains a blob",
 								"not-master", this.c2);
 		assertFalse(this.c1.equals(this.c2));
 		assertTrue(this.c1.equals(c3));
+	}
+	
+	@Test
+	public void testRemovingFromStagingGround() {
+		Blob newBlob = new Blob("/to_be_removed.txt");
+		main.Commit newCommit = new Commit(new Blob[] {newBlob});
+		Commit removedCommit = newCommit.remove("/to_be_removed.txt");
+		File removed = new File(System.getProperty("user.dir") + "/to_be_removed.txt");
+		assertTrue(!removed.exists());
+		assertEquals(0, removedCommit.getStagingGround().length);
+		if (removed.exists()) {
+			tests.TestUtility.deleteDirectory(removed);
+		}
+	}
+	
+	@After
+	public void after() {
+		File remove =  new File(System.getProperty("user.dir") + "/to_be_removed.txt");
+		if (remove.exists()) {
+			tests.TestUtility.deleteDirectory(remove);
+		}
 	}
 	
 }

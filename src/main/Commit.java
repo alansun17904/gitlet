@@ -3,6 +3,7 @@ package main;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.Arrays;
+import java.io.File;
 
 
 public class Commit {
@@ -89,10 +90,41 @@ public class Commit {
 		}
 		
 		newFiles[newFiles.length-1] = additionalFile;
-		
 		return new Commit(newFiles, this.getMessage(), this.getBranch(),
 				this.getPreviousCommit());
-		
 	}
 	
+	/*
+	 * Removes a file from the staging ground and the directory.
+	 * If this file does not exist in the staging ground, do nothing
+	 * and print out "No reason to remove file."
+	 * After removing returns a new commit object that represents 
+	 * these changes. 
+	 */
+	public Commit remove(String filename) {
+		boolean fileExists = false;
+		for (Blob file: this.blobs) {
+			if (file.getFilename().equals(System.getProperty("user.dir") + filename)) {
+				fileExists = true;
+			}
+		}
+		if (fileExists) {
+			Utility.deleteDirectory(new File(System.getProperty("user.dir") + filename));
+			if (this.blobs.length - 1 == 0) {
+				return new Commit(new Blob[] {}, this.getMessage(), 
+						this.getBranch(), this.getPreviousCommit());
+			}
+			Blob[] newFiles = new Blob[this.blobs.length - 1];
+			for (int i = 0; i < this.blobs.length; i++) {
+				if (this.blobs[i].getFilename() != filename) {
+					newFiles[i] = this.blobs[i];
+				}
+			}
+			return new Commit(newFiles, this.getMessage(), 
+								this.getBranch(), this.getPreviousCommit());
+		} else {
+			System.out.println("No reason to remove file");
+			return this;
+		}
+	}
 }
