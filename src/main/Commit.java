@@ -7,9 +7,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 
-public class Commit {
+public class Commit implements Serializable {
 	private List<Blob> blobs;
 	private String author;
 	private String hash;
@@ -139,5 +144,9 @@ public class Commit {
 			System.out.println("No reason to remove file");
 			return this;
 		}
+	}
+	
+	public boolean saveCommit() {
+		return false;
 	}
 }

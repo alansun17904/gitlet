@@ -1,5 +1,7 @@
 package tests;
 
+
+import main.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
@@ -40,35 +42,9 @@ public class TestRepositoryCreation {
 			e.printStackTrace();
 		}
 		
-		this.r = new main.Repository();
+		this.r = new Repository();
 	}
 	
-	@Test
-	public void testNewGitInitNewCommit() {
-		assertEquals(1, this.r.getCommits().length);
-		assertEquals("initial commit", r.getCommits()[0].getMessage());
-		assertEquals("master", r.getCommits()[0].getBranch());
-		
-		Calendar c = Calendar.getInstance(); 
-		c.set(1970, 0, 1, 0, 0, 0);
-		Date epoch = c.getTime();
-		assertTrue(epoch.equals(r.getCommits()[0].getDate()));
-	}
-	
-	@Test
-	public void testNewGitInitDir() {
-		File dir = new File(".");
-		File[] filesList = dir.listFiles();
-		int count = 0;
-		for (File file: filesList) {
-			if (file.getName() == ".gitlet") {
-				count++;
-				break;
-			}
-		}
-		assertEquals(1, count);
-	}
-
 	/*
 	 * Check if repo has printed "A Gitlet version-control system 
 	 * already exists in the current directory."
@@ -76,7 +52,7 @@ public class TestRepositoryCreation {
 	@Test
 	public void testDoubleGitInitDir() {
         // Create duplicate repository
-		main.Repository rDup = new main.Repository();
+		Repository rDup = new Repository();
 		
 		// Read stdout from out.txt file
 		File stdout = new File("out.txt");
@@ -84,7 +60,7 @@ public class TestRepositoryCreation {
 			Scanner reader = new Scanner(stdout);
 			assertTrue(reader.hasNextLine());
 			assertTrue(reader.nextLine().equals("A Gitlet version-control system " + 
-										"already exists in the current directory.\n"));
+										"already exists in the current directory."));
 			reader.close();
 		} catch (FileNotFoundException e) {
 			fail("Program did not generate stdout text for creating "
@@ -94,8 +70,31 @@ public class TestRepositoryCreation {
 	}
 	
 	@Test
+	public void testNewGitInitNewCommit() {
+		assertEquals(1, this.r.getCommits().size());
+		assertEquals("initial commit", r.getCommits().get(0).getMessage());
+		assertEquals("master", r.getCommits().get(0).getBranch());
+		
+		Calendar c = Calendar.getInstance(); 
+		c.set(1970, 0, 1, 0, 0, 0);
+		Date epoch = c.getTime();
+		assertTrue(epoch.equals(r.getCommits().get(0).getDate()));
+		
+		assertTrue(epoch.equals(r.getCurrentCommit().getDate()));
+		assertEquals("initial commit", r.getCurrentCommit().getMessage());
+		assertEquals("master", r.getCurrentCommit().getBranch());
+	}
+	
+	@Test
+	public void testNewGitInitDir() {
+		File gitletInitDir = new File(System.getProperty("user.dir") + ".gitlet");
+		assertTrue(gitletInitDir.exists());
+	}
+
+	
+	@Test
 	public void testFindInit() {
-		assertEquals(1, this.r.find("initial commit").length);
+		assertEquals(1, this.r.find("initial commit").size());
 	}
 	
 	@After 
