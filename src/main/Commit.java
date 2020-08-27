@@ -32,7 +32,7 @@ public class Commit implements Serializable {
 		this.message = "initial commit";
 		this.branchName = "master";
 		Calendar c = Calendar.getInstance();
-		c.set(1970, 0, 1, 1, 1, 1);
+		c.set(1970, 0, 1, 0, 0, 0);
 		this.date = c;
 		this.hash = this.generateCommitHash();
 	}

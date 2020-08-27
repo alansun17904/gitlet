@@ -77,7 +77,7 @@ public class TestRepositoryCreation {
 		
 		Calendar c = Calendar.getInstance(); 
 		c.set(1970, 0, 1, 0, 0, 0);
-		Date epoch = c.getTime();
+		Calendar epoch = c;
 		assertTrue(epoch.equals(r.getCommits().get(0).getDate()));
 		
 		assertTrue(epoch.equals(r.getCurrentCommit().getDate()));

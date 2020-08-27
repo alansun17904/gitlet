@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Repository {
-	private List<Commit> commits;
+	private List<Commit> commits = new ArrayList<Commit>();
 	private	Commit currentCommit;
 	
 	public Repository() {
@@ -27,7 +27,7 @@ public class Repository {
 		}
 		Commit firstCommit = new Commit(new ArrayList<Blob>());
 		this.currentCommit = firstCommit;
-		List<Commit> commits = new ArrayList<Commit>(Arrays.asList(firstCommit));
+		this.commits.add(firstCommit);
 		System.out.println(commits.size());
 	}
 	
@@ -40,7 +40,13 @@ public class Repository {
 	}
 	
 	public List<Commit> find(String searchString) {
-		return new ArrayList<Commit>();
+		List<Commit> matchingCommits = new ArrayList<Commit>();
+		for (int i = 0; i < this.commits.size(); i++) {
+			if (this.commits.get(i).getMessage().contains(searchString)) {
+				matchingCommits.add(this.commits.get(i));
+			}
+		}
+		return matchingCommits;
 	}
 	
 	
