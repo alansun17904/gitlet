@@ -16,19 +16,21 @@ public class Repository {
 	private	Commit currentCommit;
 	
 	public Repository() {
-		File newDirectory = new File(System.getProperty("user.dir") + ".gitlet");
+		File newDirectory = new File(System.getProperty("user.dir") + "/.gitlet");
 		if (newDirectory.exists()) {
 			System.out.println("A Gitlet version-control system already"
 					+ " exists in the current directory.");
 		} else {
 			if (!newDirectory.mkdir()) {
 				System.out.println("Could not create new repository.");
+			} else {
+				File commitSubdirectory = new File(System.getProperty("user.dir") + "/.gitlet/commits");
+				commitSubdirectory.mkdir();
 			}
+			Commit firstCommit = new Commit(new ArrayList<Blob>());
+			this.currentCommit = firstCommit;
+			this.commits.add(firstCommit);
 		}
-		Commit firstCommit = new Commit(new ArrayList<Blob>());
-		this.currentCommit = firstCommit;
-		this.commits.add(firstCommit);
-		System.out.println(commits.size());
 	}
 	
 	public List<Commit> getCommits() {

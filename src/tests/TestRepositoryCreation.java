@@ -87,7 +87,7 @@ public class TestRepositoryCreation {
 	
 	@Test
 	public void testNewGitInitDir() {
-		File gitletInitDir = new File(System.getProperty("user.dir") + ".gitlet");
+		File gitletInitDir = new File(System.getProperty("user.dir") + "/.gitlet");
 		assertTrue(gitletInitDir.exists());
 	}
 
@@ -99,7 +99,7 @@ public class TestRepositoryCreation {
 	
 	@After 
 	public void after() {
-		tests.TestUtility.deleteDirectory(new File("out.txt"));
-		tests.TestUtility.deleteDirectory(new File(".gitlet"));
+		tests.TestUtility.deleteDirectory(new File(System.getProperty("user.dir") + "/out.txt"));
+		tests.TestUtility.deleteDirectory(new File(System.getProperty("user.dir") + "/.gitlet"));
 	}
 }
